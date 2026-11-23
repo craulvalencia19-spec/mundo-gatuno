@@ -1,0 +1,13 @@
+{
+  "name": "cats-frost",
+  "version": "1.0.0",
+  "description": "Web de Cats Frost: tráiler, video y descargas. El administrador publica; los usuarios ven y descargan.",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

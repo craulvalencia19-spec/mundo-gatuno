@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#01060f">
+	<title>Cats Frost</title>
+	<link rel="icon" href="assets/gato-lentes-thumb.jpg">
+	<link rel="stylesheet" href="./style.css">
+</head>
+<body data-screen="intro" data-scene="off">
+
+	<!-- Galaxia 3D (solo se dibuja en la pantalla de carpetas) -->
+	<canvas id="scene" class="scene" role="img" aria-label="Una galaxia con una cuadrícula brillante que se curva alrededor de estrellas y planetas"></canvas>
+
+	<!-- Fondo suave del inicio (versión difusa del video) -->
+	<div id="stage" aria-hidden="true">
+		<video id="ambient" src="assets/fondo.mp4" muted loop playsinline preload="auto" tabindex="-1"></video>
+	</div>
+
+	<!-- ===================== INICIO: acceso + concepto ===================== -->
+	<main id="home" class="screen">
+		<div class="frame">
+			<video id="bgvideo" src="assets/fondo.mp4" poster="assets/fondo-poster.jpg" muted loop playsinline preload="auto" aria-label="Video del gato"></video>
+			<button id="soundBtn" class="icon-btn" type="button">Sonido: no</button>
+		</div>
+
+		<div class="panel" id="panel">
+			<!-- Acceso: usuario / administrador -->
+			<section id="gate" class="view">
+				<p class="eyebrow">Acceso</p>
+				<h1 class="brand" id="brand"></h1>
+				<p class="lead" id="tagline"></p>
+
+				<div class="roles">
+					<button class="role" id="btnUser" type="button">
+						<span class="role-ic" aria-hidden="true">🐾</span>
+						<strong>Usuario</strong>
+						<small>Mira el video y el tráiler, y descarga el juego.</small>
+					</button>
+					<button class="role" id="btnAdmin" type="button">
+						<span class="role-ic" aria-hidden="true">🔐</span>
+						<strong id="adminTitle">Administrador</strong>
+						<small>Publica videos y archivos para todos.</small>
+					</button>
+				</div>
+
+				<form id="adminForm" class="admin-form hidden" autocomplete="off">
+					<label for="adminPass">Contraseña de administrador</label>
+					<div class="row">
+						<input id="adminPass" type="password" autocomplete="current-password" spellcheck="false" required>
+						<button class="btn primary" type="submit" id="adminSubmit">Entrar</button>
+					</div>
+				</form>
+				<p class="msg" id="gateMsg" role="alert"></p>
+			</section>
+
+			<!-- Concepto del juego -->
+			<section id="concept" class="view hidden">
+				<p class="eyebrow">Concepto del juego</p>
+				<h2 class="brand sm" id="brand2"></h2>
+				<p class="lead" id="lead"></p>
+				<div class="cards" id="cards"></div>
+				<div class="art" id="art"></div>
+				<div class="cta-row">
+					<button class="btn primary big" id="goGalaxy" type="button">Ir a descargar el juego →</button>
+					<button class="btn ghost" id="backGate" type="button">← Cambiar modo</button>
+				</div>
+			</section>
+		</div>
+	</main>
+
+	<!-- ===================== GALAXIA con carpetas ===================== -->
+	<main id="galaxy" class="screen">
+		<header class="gx-head">
+			<h2 id="gxTitle"></h2>
+			<p>Elige una carpeta</p>
+		</header>
+		<div id="orbit" aria-label="Carpetas"></div>
+		<button class="btn gx-back" id="gxBack" type="button">← Inicio</button>
+		<p id="fallback" class="fallback" hidden>La galaxia necesita un navegador con WebGL 2. Las carpetas siguen funcionando.</p>
+	</main>
+
+	<footer id="hints" class="hints">
+		<span><b>Arrastra</b> el espacio para girarlo</span>
+		<span class="for-mouse"><b>Rueda</b> para acercar</span>
+		<span class="for-touch"><b>Pellizca</b> para acercar</span>
+		<span class="for-mouse"><b>Doble clic</b> para crear un planeta</span>
+		<span class="for-touch"><b>Doble toque</b> para crear un planeta</span>
+	</footer>
+
+	<!-- Modo actual (usuario / administrador) -->
+	<div id="chip" class="chip hidden">
+		<span class="dot" aria-hidden="true"></span>
+		<span id="chipText"></span>
+		<button class="btn mini" id="chipBtn" type="button"></button>
+	</div>
+
+	<!-- ===================== VENTANA GIGANTE de cada carpeta ===================== -->
+	<div id="win" class="win" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+		<header class="win-head">
+			<div class="win-titles">
+				<h2 id="winTitle"></h2>
+				<p id="winSub"></p>
+			</div>
+			<span class="pill" id="winRole"></span>
+			<button class="btn" id="winClose" type="button">Salir ✕</button>
+		</header>
+		<div class="win-body" id="winBody"></div>
+	</div>
+
+	<div id="lightbox" role="dialog" aria-modal="true" aria-label="Imagen ampliada">
+		<button class="btn close" id="lbClose" type="button">Cerrar ✕</button>
+		<button class="btn nav prev" id="lbPrev" type="button" aria-label="Anterior">‹</button>
+		<figure>
+			<img id="lbImg" src="" alt="">
+			<figcaption id="lbCap"></figcaption>
+		</figure>
+		<button class="btn nav next" id="lbNext" type="button" aria-label="Siguiente">›</button>
+	</div>
+
+	<canvas id="snow" aria-hidden="true"></canvas>
+
+	<!-- ===================== BIENVENIDA (presentación 3D, primera pantalla) ===================== -->
+	<div id="bienvenida" aria-label="Presentación de bienvenida">
+		<button id="bvSkip" type="button">Saltar ›</button>
+	</div>
+
+	<!-- ===================== INTRO modo hacker ===================== -->
+	<div id="intro">
+		<canvas id="rain"></canvas>
+		<div class="scan" aria-hidden="true"></div>
+		<main>
+			<div class="slide">
+				<div class="row"><p>Presentando</p><p>Presentando</p></div>
+				<div class="row"><p>Presentando</p><p>Presentando</p><p>Presentando</p></div>
+				<div class="row"><p>Presentando</p><p>Presentando</p><p>Presentando</p><p>Presentando</p></div>
+				<div class="row"><p>Presentando</p><p>Presentando</p><p class="center" id="introCenter">Presentando</p><p>Presentando</p><p>Presentando</p></div>
+				<div class="row"><p>Presentando</p><p>Presentando</p><p>Presentando</p><p>Presentando</p></div>
+				<div class="row"><p>Presentando</p><p>Presentando</p><p>Presentando</p></div>
+				<div class="row"><p>Presentando</p><p>Presentando</p></div>
+			</div>
+			<div class="slide features" id="features"></div>
+			<div class="slide final">
+				<p id="introTitle" class="big"></p>
+				<p id="introSub" class="sub"></p>
+			</div>
+		</main>
+	</div>
+	<button id="skip" type="button">Saltar intro ›</button>
+
+	<script src="./content.js"></script>
+	<script src="./app.js"></script>
+	<script src="./assets/anime.umd.min.js"></script>
+	<script src="./intro.js"></script>
+	<script src="./bienvenida.js"></script>
+	<script src="./script.js"></script>
+	<script src="./snow.js"></script>
+</body>
+</html>
